@@ -23,28 +23,28 @@ Maturity Ogive L50 - Female;3;15;15;0;0;;;;;;;
 Maturity Ogive L75L25 - Female;3;4;4;0;0;;;;;;;
 Offspring R;3;409337;409337;0;0;;;;;;;
 Offspring proportion;0;0;0;0.1;0.1;0.2;0.2;0.1;0.1;0.2;0;0
-Recruitment file;C:\BMT_INPUT\aladym\P. lon\Recruitment.csv;;;;;;;;;;;
+Recruitment file;/home/halphass/Progetti/BEMTOOL2.5/BMT_INPUT/aladym\P. lon\Recruitment.csv;;;;;;;;;;;
 Recruitment calibration;FALSE;35000;45000;;;;;;;;;
 Tr;2;;;;;;;;;;;
 Spawners;2;1;;;;;;;;;;
 Age range of F calculated - Male;;0;2;;;;;;;;;
 Age range of F calculated - Female;;0;2;;;;;;;;;
-M file - Male;C:\BMT_INPUT\aladym\P. lon\M.csv;;;;;;;;;;;
-M file - Female;C:\BMT_INPUT\aladym\P. lon\M.csv;;;;;;;;;;;
+M file - Male;/home/halphass/Progetti/BEMTOOL2.5/BMT_INPUT/aladym\P. lon\M.csv;;;;;;;;;;;
+M file - Female;/home/halphass/Progetti/BEMTOOL2.5/BMT_INPUT/aladym\P. lon\M.csv;;;;;;;;;;;
 Mortality type;Z;;;;;;;;;;;
-Z file;C:\BMT_INPUT\aladym\P. lon\Z.csv;;;;;;;;;;;
+Z file;/home/halphass/Progetti/BEMTOOL2.5/BMT_INPUT/aladym\P. lon\Z.csv;;;;;;;;;;;
 F type;O;[allowed values: F, O];;;;;;;;;;
 F splitting type;P;[allowed values: CAA, P];;;;;;;;;;
 F file;;;;;;;;;;;;
 F overall file;;C:\PUBBLICAZIONE BMT\GSA10\INPUT\aladym\P. lon\F_overall.csv;;;;;;;;;;
 Catch by age for splitting file;;;;;;;;;;;;
 Selectivity type;P;P;;;;;;;;;;
-Selectivity file;C:\BMT_INPUT\aladym\P. lon\Selectivity.csv;;;;;;;;;;;
+Selectivity file;/home/halphass/Progetti/BEMTOOL2.5/BMT_INPUT/aladym\P. lon\Selectivity.csv;;;;;;;;;;;
 Selectivity file by age;;;;;;;;;;;;
 Selectivity file by length;;;;;;;;;;;;
 Production type;;;;;;;;;;;;
 Production file;;;;;;;;;;;;
-Discard file;C:\BMT_INPUT\aladym\P. lon\Discard data.csv;;;;;;;;;;;
+Discard file;/home/halphass/Progetti/BEMTOOL2.5/BMT_INPUT/aladym\P. lon\Discard data.csv;;;;;;;;;;;
 P production file;;;;;;;;;;;;
 Effort type;;;;;;;;;;;;
 Effort data file;;;;;;;;;;;;
@@ -55,8 +55,8 @@ Effort - F relationship b;1;1;;;;;;;;;;
 Discard component;Y;Y;;;;;;;[allowed values: Y, 0, NA];;;
 Discard type;RO;RO;;;;;;;;;;[allowed values: V, RO]
 External Discard vector file;;;;;;;;;;;;
-Reverse-ogive Discard file;C:\BMT_INPUT\aladym\P. lon\Discard reverse ogive.csv;;;;;;;;;;;
-Landing obligation file;C:\BMT_INPUT\aladym\P. lon\ALADYM landing obligation_DPS.csv;;;;;;;;;;;
+Reverse-ogive Discard file;/home/halphass/Progetti/BEMTOOL2.5/BMT_INPUT/aladym\P. lon\Discard reverse ogive.csv;;;;;;;;;;;
+Landing obligation file;/home/halphass/Progetti/BEMTOOL2.5/BMT_INPUT/aladym\P. lon\ALADYM landing obligation_DPS.csv;;;;;;;;;;;
 Survivability proportion;0.083333333;0.083333333;0.083333333;0.083333333;0.083333333;0.083333333;0.083333333;0.083333333;0.083333333;0.083333333;0.083333333;0.083333333
 Discard survivability component;N;N;;;;;;;;;;[allowed values: Y, N]
 Discard survivability type;NA;NA;;;;;;;;;;[allowed values: C, DOS]

@@ -36,7 +36,6 @@ colnames(nofleetsegments) <- c("Fleets")
 #VITpathss_males <<- NULL
 #VITpathss_females <<- NULL
 #VITpathss_combined <<- NULL
-
 #source(suppressWarnings(paste(getwd(), "/src/load_function.r", sep="")))
 suppressWarnings(source(paste(getwd(), "/src/utils/requiredLibs.r", sep="")))
 suppressWarnings(source(paste(getwd(), "/src/utils/ini.r", sep="")))

@@ -9,7 +9,7 @@
 
 
 if (!("FLCore" %in% installed.packages()[,1])) {
-    install.packages(repos="http://flr-project.org/R")
+    install.packages(repos="http://flr-project.org/R", "FLCore")
 }
 
 if (!("ggplot2" %in% installed.packages()[,1])) {
