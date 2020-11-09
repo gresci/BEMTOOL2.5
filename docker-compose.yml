@@ -3,9 +3,13 @@ services:
 
   bemtool:
     container_name: bemtool_restrserve
-    build: .
-    restart: always
+#    build: .
+    image: gresci/bemtool
+#    restart: always
     expose:
       - 8080
+    volumes:
+    - .:/app
+    command: "Rscript -e 'source(\"app.R\");'"
     ports:
     - 8080:8080

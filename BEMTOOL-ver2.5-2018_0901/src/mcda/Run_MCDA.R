@@ -7,18 +7,14 @@
 # completeness or appropriateness for any particular purpose.
 
 
-#wsp<-ws[1]
-#load(wsp)
 
 Run_MCDA <- function() {
 
-SCENARIO_IDENTIFIER <<- "Scenario"
-#source(paste(getwd(), "/src/mcda/Weights.R", sep=""))
-
-weights=read.csv(paste(getwd(), "/src/mcda/Weights.csv", sep=""),sep=';',header=TRUE)  # Read the .csv file containing weights  
+SCENARIO_IDENTIFIER <<- "HR"
+source(paste(getwd(), "/src/mcda/Weights.R", sep=""))
 
 w <<- weights$Value
-if(sum(w)!=1) w<<- w/sum(w) else w<<- w 
+if(sum(w)!=1) w<<- w/sum(w) else w<<- w
 names(w)=weights$Name        # Check if weights sum to 1, otherwise normalize
 k_GVA_ROI_PROFITS<<- as.numeric(as.character(w[1]))
 k_RBER<<- as.numeric(as.character(w[2]))
@@ -28,13 +24,12 @@ k_SSB<<- as.numeric(as.character(w[5]))
 k_F<<- as.numeric(as.character(w[6]))
 k_Y<<- as.numeric(as.character(w[7]))
 k_D<<- as.numeric(as.character(w[8]))
- 
 
 
-#source(paste(getwd(), "/src/mcda/Utility_parameters.R", sep=""))
+source(paste(getwd(), "/src/mcda/Utility_parameters.R", sep=""))
 
 
-utility_params=read.csv(paste(getwd(), "/src/mcda/Utility_params.csv", sep=""),sep=';',header=TRUE)  # Read the .csv file containing weights  
+#utility_params=read.csv(paste(getwd(), "/src/mcda/Utility_params.csv", sep=""),sep=';',header=TRUE)  # Read the .csv file containing weights
 
 u_gva_mey<<- as.numeric(as.character(utility_params$Value[1]))
 u_gva_0.5mey<<- as.numeric(as.character(utility_params$Value[2]))
@@ -63,16 +58,22 @@ u_d_0.25<<- as.numeric(as.character(utility_params$Value[14]))
 u_d_0.5<<- as.numeric(as.character(utility_params$Value[15]))
 
 
-GVA_or_ROI_or_PROFITS<<- as.character(utility_params$Value[16])
+GVA_or_ROI_or_PROFITS<<- 'GVA'#  as.character(utility_params$Value[16])
 last_values<<- as.numeric(as.character(utility_params$Value[17]))
 
 
-#source(paste(getwd(), "/src/mcda/Functions.R", sep=""))
+source(paste(getwd(), "/src/mcda/Functions.R", sep=""))
+last_values <- 3
 
-# The following variables should be already available from the bmtconfig file: years, years.forecast, casestudy_path, length(BMT_SPECIES); otherwise, load_function.r should be run
+# MODIFICARE QUESTE RIGHE SECONDO LE IMPOSTAZIONI FINALI DEL CASO STUDIO.
 
-years.all <- c(years,years.forecast) 
+casestudy_path <- "/app/BMT_OUTPUT" #Percorso dove sono tutti i risultati degli scenari e la cartella MEY calculation
+years.all <-  c(2006:2030) #vettore contenente gli anni di simulazione e forecast (es. c(2006:2030) )
+BMT_SPECIES <- c("P. lon", "M. bar", "M. mer") #vettore contenente i nomi delle specie incluse nel caso studio
+
+years.all <- c(years,years.forecast)
 last_values <- ifelse(length(years.all)>last_values,last_values,(length(years.all)-1))
+
 
 case_studies <- list.files(casestudy_path)  ## list all folders in the directory of case studies
 # case_studies_HR <- case_studies[grep('HR',substr(case_studies,1,2))] ## list all folders related to HR scenarios
@@ -85,7 +86,7 @@ MEY_name <- list.files(paste(casestudy_path,'/',MEY_dir,sep=''),pattern = "\\.(c
 
 MEY_path <- paste(casestudy_path,'/',MEY_dir,'/',MEY_name,sep='')
 
-MEY <-  read.csv(MEY_path,sep=";",header=T,fileEncoding="Latin1")  
+MEY <-  read.csv(MEY_path,sep=";",header=T,fileEncoding="Latin1")
 
 num_scenario <- length(case_studies_HR)
 
@@ -147,23 +148,23 @@ PRESSIMPindicators_mcda <- PRESSIMPindicators_temp[as.numeric(as.character(PRESS
 #################################################################################
 ### Socioeconomic reference points values
 
-# Minimum national wage 
+# Minimum national wage   8430.889 # average wage 2016 #
     MNW <- unique(as.numeric(as.character(ECOindicators[ECOindicators$Variable=="Min.national.wage",]$Value)))
 
 # Current employment if employment in the first year
 
-    CE <- as.numeric(as.character(ECOindicators[ECOindicators$Year==years.all[1] & ECOindicators$Variable=="employment" & ECOindicators$Fleet_segment=="ALL",]$Value)) 
+    CE <- as.numeric(as.character(ECOindicators[ECOindicators$Year==years.all[1] & ECOindicators$Variable=="employment" & ECOindicators$Fleet_segment=="ALL",]$Value))
 
 
 # From MEY file the following variables should be extracted:
 
     MEY_GVA <- MEY$Value[1]
-    
+
     MEY_PROFITS <- MEY$Value[2]
-    
+
     MEY_ROI <- MEY$Value[3]
-    
-    
+
+
 ### Socioeconomic indicator values (calculated as the mean over the last values of the series)
 
     GVA <- mean(ECOindicators_mcda[ECOindicators_mcda$Variable=='gross.value.added',]$Value,na.rm=TRUE)
@@ -190,11 +191,11 @@ PRESSIMPindicators_mcda <- PRESSIMPindicators_temp[as.numeric(as.character(PRESS
 ### Pressure indicators values
 
     F <- tapply(PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='F',]$Value,PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='F' ,]$Stock,mean,na.rm=TRUE)
-    
-    #Y <- tapply(PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='Y',]$Value,PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='Y',]$Stock,mean,na.rm=TRUE)
+
+
     Y <- tapply(PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='Catch',]$Value,PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='Catch',]$Stock,mean,na.rm=TRUE)
-    
-#        D <- tapply(PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='D',]$Value,PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='D',]$Stock,mean,na.rm=TRUE)    
+
+
     D <- tapply(PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='Discard',]$Value,PRESSIMPindicators_mcda[PRESSIMPindicators_mcda$Variable=='Discard',]$Stock,mean,na.rm=TRUE)
 
 
@@ -202,10 +203,10 @@ PRESSIMPindicators_mcda <- PRESSIMPindicators_temp[as.numeric(as.character(PRESS
 ### Biological reference points values
 
    SSBMSY <- BIOIndicators[BIOIndicators$Year=="ALL"&BIOIndicators$Variable=='SSBref',][order(BIOIndicators[BIOIndicators$Year=="ALL"&BIOIndicators$Variable=='SSBref',]$Stock),]$Value   # vector
-    
-    
-    ### Biological indicator  values 
-   
+
+
+    ### Biological indicator  values
+
    SSB <- tapply(BIOIndicators_mcda[BIOIndicators_mcda$Variable=='SSB_exploited_pop',]$Value,BIOIndicators_mcda[BIOIndicators_mcda$Variable=='SSB_exploited_pop',]$Stock,mean,na.rm=TRUE)
 
    SSB0=tapply(BIOIndicators_mcda[BIOIndicators_mcda$Variable=='SSB_unexploited_pop',]$Value,BIOIndicators_mcda[BIOIndicators_mcda$Variable=='SSB_unexploited_pop',]$Stock,mean,na.rm=TRUE)
@@ -216,7 +217,7 @@ PRESSIMPindicators_mcda <- PRESSIMPindicators_temp[as.numeric(as.character(PRESS
 ### UTILITY_CALCULATION
 
 
-U<- numeric(8) 
+U<- numeric(8)
 
 
 U[1]=ifelse(GVA_or_ROI_or_PROFITS=='GVA',UGVA(GVA,MEY_GVA,u_gva_mey,u_gva_0.5mey),ifelse(GVA_or_ROI_or_PROFITS=='ROI',UGVA(ROI,MEY_ROI,u_gva_mey,u_gva_0.5mey),UGVA(PROFITS,MEY_PROFITS,u_gva_mey,u_gva_0.5mey)))
@@ -237,6 +238,7 @@ Unweighted_utilities[,i+1] <- round(U,4)
 
 MCDA[,i] <- round(U*w,4)
 }
+
 
 
 colnames(Summary_indicators) <- c('MNW','WAGE','CE','EMPL',ifelse(GVA_or_ROI_or_PROFITS=='GVA','GVA',ifelse(GVA_or_ROI_or_PROFITS=='PROFITS','PROFITS','ROI')),
@@ -264,49 +266,52 @@ write.table(Unweighted_utilities, file=paste(save_path,'/','Unweighted_utilities
 write.table(round(Summary_indicators,3), file=paste(save_path,'/','Summary_indicators.csv',sep=''), sep=";", row.names=TRUE,col.names=NA)
 
 
+
+rownames(MCDA) <-ut_names
+
 ### Save Results-Graphs
 ### FIGURE 1
-jpeg(file=paste(save_path,'/','MCDA_1.jpg',sep=''),width=21, height=21, bg="white", units="cm",res=200)  
+jpeg(file=paste(save_path,'/','MCDA_1.jpg',sep=''),width=21, height=21, bg="white", units="cm",res=200)
 par(mar=c(15, 12.1, 4.1, 5.1), xpd=TRUE)
 mg <- barplot(apply(MCDA,2,sum, na.rm=T),col='grey',axes = FALSE, axisnames = FALSE,ylab='Utility', main="Overall utility")
 text(mg, par('usr')[3], labels =colnames(MCDA), srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=.9)
 axis(2)
- mtext( BMT_sw_version,side=4,outer=FALSE, cex = 0.7)
+ #mtext( BMT_sw_version,side=4,outer=FALSE, cex = 0.7)
 
 dev.off()
 
 ### FIGURE 2
-jpeg(file=paste(save_path,'/','MCDA_2.jpg',sep=''),width=21, height=21, bg="white", units="cm",res=200) 
+jpeg(file=paste(save_path,'/','MCDA_2.jpg',sep=''),width=21, height=21, bg="white", units="cm",res=200)
 par(mar=c(15, 12.1, 4.1, 10.1), xpd=TRUE)
 
 mg <- barplot(MCDA,col=topo.colors(8),axes = FALSE, axisnames = FALSE,ylab='Utility', main="Utility per indicator")
 text(mg, par('usr')[3], labels =colnames(MCDA), srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=.9)
 axis(2)
 legend('topright',ut_names,fill=topo.colors(8),bty='n',ncol=1,inset=c(-0.4,0))
- mtext( BMT_sw_version,side=4,outer=FALSE, cex = 0.7)
+# mtext( BMT_sw_version,side=4,outer=FALSE, cex = 0.7)
 
 dev.off()
 
 ### FIGURE 3
-jpeg(file=paste(save_path,'/','MCDA_3.jpg',sep=''),width=21, height=21, bg="white", units="cm",res=200)  
+jpeg(file=paste(save_path,'/','MCDA_3.jpg',sep=''),width=21, height=21, bg="white", units="cm",res=200)
 par(mar=c(15, 12.1, 4.1, 10.1), xpd=TRUE)
 barplot(mapply(rowsum,as.data.frame(MCDA),as.data.frame(low_hierarchy)),col=terrain.colors(4),ylab='Utility',main="Utility per group of indicators", axes = FALSE, axisnames = FALSE)
 text(mg, par('usr')[3], labels =colnames(MCDA), srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=.9)
 axis(2)
 legend('topright',levels(as.factor(low_hierarchy)),fill=terrain.colors(4),bty='n',ncol=1,inset=c(-0.4,0))
- mtext( BMT_sw_version,side=4,outer=FALSE, cex = 0.7)
+#mtext( BMT_sw_version,side=4,outer=FALSE, cex = 0.7)
 
 dev.off()
 
 
 ### FIGURE 4
-jpeg(file=paste(save_path,'/','MCDA_4.jpg',sep=''),width=21, height=21, bg="white", units="cm",res=200)  
+jpeg(file=paste(save_path,'/','MCDA_4.jpg',sep=''),width=21, height=21, bg="white", units="cm",res=200)
 par(mar=c(15, 12.1, 4.1, 10.1), xpd=TRUE)
 barplot(mapply(rowsum,as.data.frame(MCDA),as.data.frame(top_hierarchy)),col=topo.colors(2),ylab='Utility',main="Utility per macro group of indicators", axes = FALSE, axisnames = FALSE)
 text(mg, par('usr')[3], labels =colnames(MCDA), srt = 45, adj = c(1.1,1.1), xpd = TRUE, cex=.9)
 axis(2)
 legend('topright',levels(as.factor(top_hierarchy)),fill=topo.colors(2),bty='n',ncol=1,inset=c(-0.4,0))
- mtext( BMT_sw_version,side=4,outer=FALSE, cex = 0.7)
+# mtext( BMT_sw_version,side=4,outer=FALSE, cex = 0.7)
 
 dev.off()
 

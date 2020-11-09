@@ -14,6 +14,7 @@ eval_scenarios_bio<- function() {
 
 workdir <- getwd()
 setwd(casestudy_path)
+print(paste('PATH CS',workdir))
 dir.create("Evaluation")
 setwd(paste(casestudy_path, "/Evaluation", sep=""))
 dir.create("Biological and Pressure evaluation")
