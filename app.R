@@ -4,6 +4,10 @@
 
 library(RestRserve)
 library(jsonlite)
+
+(source(paste(Sys.getenv("BEMTOOL_DIR"), "/src/utils/requiredLibs.r", sep="")))
+
+
 ## ---- create handler for the HTTP requests ----
 
 # simple response
