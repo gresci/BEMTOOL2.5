@@ -5,6 +5,7 @@
 library(RestRserve)
 library(jsonlite)
 
+## bemtool libs preload
 (source(paste(Sys.getenv("BEMTOOL_DIR"), "/src/utils/requiredLibs.r", sep="")))
 
 
