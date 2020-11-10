@@ -5,6 +5,7 @@
 library(RestRserve)
 library(jsonlite)
 
+
 ## bemtool libs preload
 (source(paste(Sys.getenv("BEMTOOL_DIR"), "/src/utils/requiredLibs.r", sep="")))
 
@@ -102,7 +103,10 @@ run_mcda_post = function(request, response) {
 
   print('Run_MCDA')
   Run_MCDA(MCDAweight_table, MCDAutility_table, request_id)
-  response$body = "run_mcda!"
+  out_path = save_path=paste(Sys.getenv("MCDA_SAVE_DIR"), request_id, sep='/')
+  bemtool_uri = paste(Sys.getenv("BEMTOOL_PROTO"), "://", Sys.getenv("BEMTOOL_HOST"), ':', Sys.getenv("BEMTOOL_PORT"), sep="")
+  response$body = to_json(paste(bemtool_uri, "mcda", request_id, list.files(out_path), sep="/"))
+
 }
 
 ## ---- create application -----

@@ -15,3 +15,6 @@ services:
     - 8080:8080
     environment:
     - MCDA_SAVE_DIR=/app/out_data
+    - BEMTOOL_PROTO=http
+    - BEMTOOL_HOST=172.21.0.2
+    - BEMTOOL_PORT=8080
