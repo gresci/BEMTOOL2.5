@@ -3,14 +3,14 @@
 ## ---- load packages ----
 
 library(RestRserve)
-
+library(jsonlite)
 ## ---- create handler for the HTTP requests ----
 
 # simple response
 run_mcda = function(request, response) {
   setwd(paste(getwd(), Sys.getenv("BEMTOOL_DIR"), sep="/"))
 
-  print('*** LOADING BEMTOOL ***')
+print('*** LOADING BEMTOOL ***')
   source(paste(getwd(), "BEMTOOL_NO_GUI.r", sep="/"))
   print('*** BEMTOOL LOADED ***')
 
@@ -22,7 +22,8 @@ run_mcda = function(request, response) {
   write.table(MCDAutility_table, paste(getwd(), "src/mcda/Utility_params.csv", sep="/"), sep=";", row.names=F)
 
   print('Run_MCDA')
-  Run_MCDA()
+
+Run_MCDA()
   response$body = "run_mcda!"
 }
 
@@ -56,10 +57,43 @@ hello_path_handler = function(request, response) {
 }
 
 
+run_mcda_post = function(request, response) {
+  setwd(paste(getwd(), Sys.getenv("BEMTOOL_DIR"), sep="/"))
+
+  print('*** LOADING BEMTOOL ***')
+  source(paste(getwd(), "BEMTOOL_NO_GUI.r", sep="/"))
+  print('*** BEMTOOL LOADED ***')
+
+  print(request$get_param_body("weights"))
+  print(request$body$utility_params)
+  print(data.frame(read.csv(paste(getwd(), "src/mcda/Utility_params_default.csv", sep="/"), sep=";")))
+  MCDAutility_table <<- request$body$weights
+  MCDAweight_table <<- request$body$utility_params
+
+  write.table(MCDAweight_table, file= paste(getwd(), "src/mcda/Weights.csv", sep="/"), sep=";", row.names=F )
+  MCDAutility_table$Value[16] <- ifelse(MCDAutility_table$Value[16] ==1, "GVA", ifelse(MCDAutility_table$Value[16] ==2, "ROI", "PROFITS"))
+  write.table(MCDAutility_table, paste(getwd(), "src/mcda/Utility_params.csv", sep="/"), sep=";", row.names=F)
+
+  print('Run_MCDA')
+  Run_MCDA()
+  response$body = "run_mcda!"
+}
+
 ## ---- create application -----
 
+## override default json decoding middleware
+
+enc_dec_mw = EncodeDecodeMiddleware$new()
+
+enc_dec_mw$ContentHandlers$set_decode("application/json",function(x){
+  if (is.raw(x)) {
+    x = rawToChar(x)
+  }
+return(fromJSON(x))})
+
 app = Application$new(
-  content_type = "text/plain"
+  content_type = "text/plain",
+  middleware = list(enc_dec_mw)
 )
 
 
@@ -86,6 +120,10 @@ app$add_get(
   match = "regex"
 )
 
+app$add_post(
+  path = "/mcda",
+  FUN = run_mcda_post
+)
 
 ## ---- start application ----
 backend = BackendRserve$new()
