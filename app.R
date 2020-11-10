@@ -64,9 +64,6 @@ run_mcda_post = function(request, response) {
   source(paste(getwd(), "BEMTOOL_NO_GUI.r", sep="/"))
   print('*** BEMTOOL LOADED ***')
 
-  print(request$get_param_body("weights"))
-  print(request$body$utility_params)
-  print(data.frame(read.csv(paste(getwd(), "src/mcda/Utility_params_default.csv", sep="/"), sep=";")))
   MCDAutility_table <<- request$body$weights
   MCDAweight_table <<- request$body$utility_params
 
