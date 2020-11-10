@@ -8,10 +8,14 @@
 
 
 
-Run_MCDA <- function() {
+Run_MCDA <- function(weights, utility_params) {
 
 SCENARIO_IDENTIFIER <<- "HR"
-source(paste(getwd(), "/src/mcda/Weights.R", sep=""))
+
+## TBR here i disabled the source call to weights and utility params because the code
+## inside the files except the csv read seems to be repeated under the source call
+## just with different scope assignment
+## source(paste(getwd(), "/src/mcda/Weights.R", sep=""))
 
 w <<- weights$Value
 if(sum(w)!=1) w<<- w/sum(w) else w<<- w
@@ -26,7 +30,7 @@ k_Y<<- as.numeric(as.character(w[7]))
 k_D<<- as.numeric(as.character(w[8]))
 
 
-source(paste(getwd(), "/src/mcda/Utility_parameters.R", sep=""))
+## source(paste(getwd(), "/src/mcda/Utility_parameters.R", sep=""))
 
 
 #utility_params=read.csv(paste(getwd(), "/src/mcda/Utility_params.csv", sep=""),sep=';',header=TRUE)  # Read the .csv file containing weights

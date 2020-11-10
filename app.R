@@ -22,13 +22,10 @@ print('*** LOADING BEMTOOL ***')
   MCDAutility_table <<- data.frame(read.csv(paste(getwd(), "src/mcda/Utility_params_default.csv", sep="/"), sep=";"))
   MCDAweight_table <<- read.csv(paste(getwd(), "src/mcda/Weights_default.csv", sep="/"), sep=";")
 
-  write.table(MCDAweight_table, file= paste(getwd(), "src/mcda/Weights.csv", sep="/"), sep=";", row.names=F )
   MCDAutility_table$Value[16] <- ifelse(MCDAutility_table$Value[16] ==1, "GVA", ifelse(MCDAutility_table$Value[16] ==2, "ROI", "PROFITS"))
-  write.table(MCDAutility_table, paste(getwd(), "src/mcda/Utility_params.csv", sep="/"), sep=";", row.names=F)
 
-  print('Run_MCDA')
+  Run_MCDA(MCDAweight_table, MCDAutility_table)
 
-Run_MCDA()
   response$body = "run_mcda!"
 }
 
@@ -72,12 +69,10 @@ run_mcda_post = function(request, response) {
   MCDAutility_table <<- request$body$weights
   MCDAweight_table <<- request$body$utility_params
 
-  write.table(MCDAweight_table, file= paste(getwd(), "src/mcda/Weights.csv", sep="/"), sep=";", row.names=F )
   MCDAutility_table$Value[16] <- ifelse(MCDAutility_table$Value[16] ==1, "GVA", ifelse(MCDAutility_table$Value[16] ==2, "ROI", "PROFITS"))
-  write.table(MCDAutility_table, paste(getwd(), "src/mcda/Utility_params.csv", sep="/"), sep=";", row.names=F)
 
   print('Run_MCDA')
-  Run_MCDA()
+  Run_MCDA(MCDAweight_table, MCDAutility_table)
   response$body = "run_mcda!"
 }
 
