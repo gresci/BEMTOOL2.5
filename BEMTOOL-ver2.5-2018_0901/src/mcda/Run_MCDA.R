@@ -8,7 +8,13 @@
 
 
 
-Run_MCDA <- function(weights, utility_params) {
+Run_MCDA <- function(weights, utility_params, request_id) {
+
+if(missing(request_id)) {
+  ## if request_id is missing save stuff under a tmp dir
+  ## TODO better defaults
+  request_id <- "/tmp"
+}
 
 SCENARIO_IDENTIFIER <<- "HR"
 
@@ -260,7 +266,7 @@ MCDA[is.na(MCDA[])] <- 0
 
 ### Save Results-Tables
 
-save_path=paste(casestudy_path,'/','MCDA_results',sep='')
+save_path=paste(Sys.getenv("MCDA_SAVE_DIR"), request_id, sep='/')
 dir.create(save_path)
 
 write.table(MCDA, file=paste(save_path,'/','MCDA.csv',sep=''), sep=";", row.names=TRUE,col.names=NA)

@@ -66,13 +66,14 @@ run_mcda_post = function(request, response) {
   source(paste(getwd(), "BEMTOOL_NO_GUI.r", sep="/"))
   print('*** BEMTOOL LOADED ***')
 
-  MCDAutility_table <<- request$body$weights
-  MCDAweight_table <<- request$body$utility_params
+  request_id <- request$body$request_id
+  MCDAutility_table <- request$body$weights
+  MCDAweight_table <- request$body$utility_params
 
   MCDAutility_table$Value[16] <- ifelse(MCDAutility_table$Value[16] ==1, "GVA", ifelse(MCDAutility_table$Value[16] ==2, "ROI", "PROFITS"))
 
   print('Run_MCDA')
-  Run_MCDA(MCDAweight_table, MCDAutility_table)
+  Run_MCDA(MCDAweight_table, MCDAutility_table, request_id)
   response$body = "run_mcda!"
 }
 
