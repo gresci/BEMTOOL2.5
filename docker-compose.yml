@@ -13,3 +13,5 @@ services:
     command: "Rscript -e 'source(\"app.R\");'"
     ports:
     - 8080:8080
+    environment:
+    - MCDA_SAVE_DIR=/app/out_data
