@@ -1,7 +1,11 @@
 FROM rexyai/restrserve
 
 ENV BEMTOOL_DIR='BEMTOOL-ver2.5-2018_0901' \
-    ALADYMT='ALADYMTools_1.6.tar.gz'
+    ALADYMT='ALADYMTools_1.6.tar.gz' \
+    MCDA_SAVE_DIR='/app/out_data' \
+    BEMTOOL_PROTO='http' \
+    BEMTOOL_HOST='localhost' \
+    BEMTOOL_PORT='8080'
 
 RUN apt-get update && apt-get -y install build-essential libgtk2.0-dev \
     libjpeg62-turbo-dev libxml2-dev libxslt-dev curl libcurl4-openssl-dev libssl-dev \
@@ -19,14 +23,6 @@ RUN R CMD INSTALL /installation/ALADYMTools*.tar.gz \
 COPY . /app
 WORKDIR /app
 
-#ENV RUNME BEMTOOL/RUNme.r
-#ENV CIAO ${cat $RUNME}
-#RUN echo $CIAO
-#RUN bash dockerfiles/install_dependencies.sh
 
-#RUN mv BEMTOOL-ver* BEMTOOL
-
-#RUN R CMD INSTALL ALADYMTools*.tar.gz && rm ALADYMTools*.tar.gz \
-#    && Rscript -e 'source(paste(getwd(), "/BEMTOOL/RUNme.r", sep=""))'
 
 CMD "Rscript -e 'source(\"app.R\");'"
