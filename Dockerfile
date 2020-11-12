@@ -24,4 +24,4 @@ WORKDIR /app
 
 EXPOSE ${BEMTOOL_PORT}
 
-CMD "Rscript -e 'source(\"app.R\");'"
+CMD "Rscript -e 'source(\"/app/app.R\");'"
