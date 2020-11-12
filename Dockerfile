@@ -2,9 +2,8 @@ FROM rexyai/restrserve
 
 ENV BEMTOOL_DIR='BEMTOOL-ver2.5-2018_0901' \
     ALADYMT='ALADYMTools_1.6.tar.gz' \
-    MCDA_SAVE_DIR='/app/out_data' \
-    BEMTOOL_PROTO='http' \
-    BEMTOOL_HOST='localhost' \
+    MCDA_SAVE_DIR='/app/MCDA_OUTPUT' \
+    BEMTOOL_URL='http://localhost:8080' \
     BEMTOOL_PORT='8080'
 
 RUN apt-get update && apt-get -y install build-essential libgtk2.0-dev \
@@ -23,6 +22,6 @@ RUN R CMD INSTALL /installation/ALADYMTools*.tar.gz \
 COPY . /app
 WORKDIR /app
 
-
+EXPOSE ${BEMTOOL_PORT}
 
 CMD "Rscript -e 'source(\"app.R\");'"
