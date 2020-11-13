@@ -7,8 +7,11 @@ library(jsonlite)
 
 
 ## bemtool libs preload
-(source(paste(Sys.getenv("BEMTOOL_DIR"), "/src/utils/requiredLibs.r", sep="")))
-
+print('*** LOADING BEMTOOL ***')
+source(paste('/app',Sys.getenv("BEMTOOL_DIR"), "src/utils/requiredLibs.r", sep="/"))
+setwd(paste(getwd(), Sys.getenv("BEMTOOL_DIR"), sep="/"))
+source(paste('/app', Sys.getenv("BEMTOOL_DIR"), "BEMTOOL_NO_GUI.r", sep="/"))
+print('*** BEMTOOL LOADED ***')
 ## utils
 
 is_uuid = function(x) {
@@ -35,16 +38,11 @@ mcda_get_products_handler = function(request, response) {
 }
 
 run_mcda_post = function(request, response) {
-  setwd(paste(getwd(), Sys.getenv("BEMTOOL_DIR"), sep="/"))
-
   ## run user input checks
   ## check uuid correctness
   if(!is_uuid(request$body$request_id)) {
      raise(HTTPError$bad_request())
   }
-  print('*** LOADING BEMTOOL ***')
-  source(paste(getwd(), "BEMTOOL_NO_GUI.r", sep="/"))
-  print('*** BEMTOOL LOADED ***')
 
   ## TODO sanitize paths?
   request_id <- request$body$request_id
@@ -53,17 +51,25 @@ run_mcda_post = function(request, response) {
 
   MCDAutility_table$Value[16] <- ifelse(MCDAutility_table$Value[16] ==1, "GVA", ifelse(MCDAutility_table$Value[16] ==2, "ROI", "PROFITS"))
 
-  print('Run_MCDA')
+  print('Running MCDA')
   Run_MCDA(MCDAweight_table, MCDAutility_table, request_id)
-  out_path = save_path=paste(Sys.getenv("MCDA_SAVE_DIR"), request_id, sep='/')
+  out_path = paste(Sys.getenv("MCDA_SAVE_DIR"), request_id, sep='/')
   bemtool_uri = Sys.getenv("BEMTOOL_URL")
-  response$body = to_json(paste(bemtool_uri, "mcda", request_id, list.files(out_path), sep="/"))
+  file_list = list.files(out_path)
+  file_path = paste(bemtool_uri, request_id, file_list, sep="/")
+  df <- data.frame(file_path)
+  df$name <- gsub("\\..+$", "", file_list)
+  df$type <- gsub("^.+\\.", "", file_list)
+  response$set_content_type("application/json")
+  response$body = df
 
 }
 
 ## ---- create application -----
 
 ## override default json decoding middleware
+
+cors = CORSMiddleware$new()
 
 enc_dec_mw = EncodeDecodeMiddleware$new()
 
@@ -72,10 +78,12 @@ enc_dec_mw$ContentHandlers$set_decode("application/json",function(x){
     x = rawToChar(x)
   }
 return(fromJSON(x))})
+enc_dec_mw$ContentHandlers$set_encode("application/json",function(x){
+return(toJSON(x))})
 
 app = Application$new(
   content_type = "text/plain",
-  middleware = list(enc_dec_mw)
+  middleware = list(enc_dec_mw,cors)
 )
 
 ## ---- register endpoints and corresponding R handlers ----
@@ -93,4 +101,4 @@ app$add_get(
 
 ## ---- start application ----
 backend = BackendRserve$new()
-backend$start(app, http_port = Sys.getenv("BEMTOOL_PORT"))
+backend$start(app, http_port = as.integer(Sys.getenv("BEMTOOL_PORT")))
