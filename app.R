@@ -46,8 +46,8 @@ run_mcda_post = function(request, response) {
 
   ## TODO sanitize paths?
   request_id <- request$body$request_id
-  MCDAutility_table <- request$body$weights
-  MCDAweight_table <- request$body$utility_params
+  MCDAutility_table <- request$body$utility_params
+  MCDAweight_table <- request$body$weights
 
   MCDAutility_table$Value[16] <- ifelse(MCDAutility_table$Value[16] ==1, "GVA", ifelse(MCDAutility_table$Value[16] ==2, "ROI", "PROFITS"))
 
