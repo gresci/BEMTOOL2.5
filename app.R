@@ -69,7 +69,8 @@ run_mcda_post = function(request, response) {
 
 ## override default json decoding middleware
 
-cors = CORSMiddleware$new()
+#cors = CORSMiddleware$new()
+cors = CORSMiddleware$new(routes = "/", match = "partial", id = "CORSMiddleware")
 
 enc_dec_mw = EncodeDecodeMiddleware$new()
 
@@ -98,6 +99,18 @@ app$add_get(
    FUN = mcda_get_products_handler,
    match = "regex"
 )
+
+app$add_route("/mcda", method = "OPTIONS", FUN = function(req, res) {
+  res$set_header("Allow", "POST, OPTIONS")
+})
+app$add_route("//mcda/{request_id}/{product_id}", method = "OPTIONS", FUN = function(req, res) {
+  res$set_header("Allow", "GET, OPTIONS")
+})
+#req = Request$new(
+#path = "/hello",
+#headers = list("Access-Control-Request-Method" = "POST"),
+#method = "OPTIONS"
+#)
 
 ## ---- start application ----
 backend = BackendRserve$new()
